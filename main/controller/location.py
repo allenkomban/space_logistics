@@ -28,7 +28,7 @@ class Location(Resource):
 	@api.response(404, 'bad request')
 	def delete(self, id):
 		"""
-			This is the functionality to to delete a location from the database
+			This is the functionality to delete a location from the database
 		"""
 		response = remove_location(id)
 		return response

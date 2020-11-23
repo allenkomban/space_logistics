@@ -29,12 +29,20 @@ def remove_location(id):
         this is the functionality to delete a location from the database
     """
     location = Location.query.filter_by(id=id).first()
+    spaceships_in_location = Spaceship.query.filter_by(location=id)
+    print(spaceships_in_location)
 
     if location:
 
+        if spaceships_in_location:
+            resp = make_response(jsonify({'message': 'This location cannot be deleted as their are spaceships in the location, you will have to move the spaceships to another location'}))
+            resp.status_code = BAD_REQUEST
+            return resp
+
+
         db.session.delete(location)
         db.session.commit()
-        resp = make_response(jsonify({'message': 'location  deleted succesfully'}))
+        resp = make_response(jsonify({'message': 'location  deleted succesfully '}))
         resp.status_code = SUCCESS
         return resp
 
