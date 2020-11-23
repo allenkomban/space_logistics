@@ -1,6 +1,7 @@
 from flask_restplus import Api
 from flask import Blueprint
 from .controller.location import api as location
+from .controller.spaceship import api as spaceship
 
 
 blueprint = Blueprint('api', __name__)
@@ -16,3 +17,4 @@ api = Api(blueprint,
 
 
 api.add_namespace(location, path='/location')
+api.add_namespace(spaceship, path='/spaceship')
