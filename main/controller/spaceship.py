@@ -36,6 +36,8 @@ class Spaceship(Resource):
     @api.response(200, 'success')
     @api.expect(update_spaceship_model)
     @api.response(400, 'Bad request')
+    @api.response(404, 'not found')
+
     def put(self, id):
         """
             interface to modify/update the spaceship status.
@@ -45,4 +47,14 @@ class Spaceship(Resource):
         response = update_spaceship(updated_info, id)
         return response
 
+    @api.doc('update spaceship status')
+    @api.response(200, 'success')
+    @api.response(404, 'not found')
+    def delete(self,id):
+        """
+                    interface to remove a spaceship .
+        """
+
+        response = remove_spaceship(id)
+        return response
 

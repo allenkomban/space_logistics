@@ -87,10 +87,27 @@ def update_spaceship(data,id):
             return resp
     else:
         resp = make_response(jsonify({'message': 'spaceship with id do not exist in database'}))
-        resp.status_code = BAD_REQUEST
+        resp.status_code = NOT_FOUND
         return resp
 
     
     
-    
+def remove_spaceship(id):
+    spaceship = Spaceship.query.filter_by(id=id).first()
+    location = Location.query.filter_by(id=spaceship.location).first()
+    if spaceship:
+        location.availability=location.availability+1
+        db.session.delete(spaceship)
+        db.session.add(location)
+        db.session.commit()
+        resp = make_response(jsonify({'message': 'spaceship removed succesfully '}))
+        resp.status_code = SUCCESS
+        return resp
+
+    else:
+        resp = make_response(jsonify({'error': 'spaceship with id do not exist in database '}))
+        resp.status_code = NOT_FOUND
+        return resp
+
+
     
