@@ -24,3 +24,5 @@ class LocationDto:
     })
 
 
+class TravelDto:
+    api = Namespace('travel', description='travel related operations:')

@@ -1,4 +1,3 @@
-from .. import db
 from ..model.model import *
 from flask import jsonify, make_response
 from ..util.http_status import *
@@ -49,7 +48,7 @@ def add_spaceship(data,id):
     spaceship = Spaceship(id=id, name=data['name'], model=data['model'], location=location.id,status=status)
     db.session.add(spaceship,location)
     db.session.commit()
-    resp=make_response(jsonify({'message': 'spaceship added succesfully '}))
+    resp=make_response(jsonify({'message': 'spaceship added successfully '}))
     resp.status_code= SUCCESS
     return resp
 
@@ -78,7 +77,7 @@ def update_spaceship(data,id):
 
             db.session.add(spaceship)
             db.session.commit()
-            resp = make_response(jsonify({'message': 'status of spaceship updated succesfully'}))
+            resp = make_response(jsonify({'message': 'status of spaceship updated successfully'}))
             resp.status_code = SUCCESS
             return resp
         else:
@@ -93,6 +92,16 @@ def update_spaceship(data,id):
     
     
 def remove_spaceship(id):
+    """ Function to remove spaceship
+           		param:id
+           		- updated_info contains updated status for
+           		- id is the id of spaceship to be updated
+
+           		1. check for criteria to remove
+           		2. lookup the spaceship according to id
+           		3. remove the spaceship
+           		return: resp
+           	"""
     spaceship = Spaceship.query.filter_by(id=id).first()
     location = Location.query.filter_by(id=spaceship.location).first()
     if spaceship:
@@ -100,7 +109,7 @@ def remove_spaceship(id):
         db.session.delete(spaceship)
         db.session.add(location)
         db.session.commit()
-        resp = make_response(jsonify({'message': 'spaceship removed succesfully '}))
+        resp = make_response(jsonify({'message': 'spaceship removed successfully '}))
         resp.status_code = SUCCESS
         return resp
 

@@ -26,7 +26,7 @@ def add_location(data, id):
         location=Location(id=id, city=data['city'], planet=data['planet'], capacity=data['capacity'], availability=data['capacity'] )
         db.session.add(location)
         db.session.commit()
-        resp = make_response(jsonify({'message': 'location added succesfully'}))
+        resp = make_response(jsonify({'message': 'location added successfully'}))
         resp.status_code = SUCCESS
         return resp
 
@@ -53,7 +53,7 @@ def remove_location(id):
 
         db.session.delete(location)
         db.session.commit()
-        resp = make_response(jsonify({'message': 'location  deleted succesfully '}))
+        resp = make_response(jsonify({'message': 'location  deleted successfully '}))
         resp.status_code = SUCCESS
         return resp
 
