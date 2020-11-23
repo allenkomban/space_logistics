@@ -2,11 +2,19 @@ from flask import jsonify, make_response
 from ..model.model import *
 from ..util.http_status import *
 
+"""
+	service.location provides supported functions for controll.location
+	add_location() -- support create api
+	remove_location() -- support delete api
+"""
 
 def add_location(data, id):
-    """
+    """ Function to add location
     params: data, id
-    adds a location with the data provided
+        1.check for vality of data
+        2.create new location with data
+        3.add it to data base
+        return:resp
     """
     location = Location.query.filter_by(id=id).first()
 
@@ -24,9 +32,12 @@ def add_location(data, id):
 
 
 def remove_location(id):
-    """
+    """ Function to remove location
         params: id
-        this is the functionality to delete a location from the database
+        1.check criteria and validity
+        2.modify database
+
+
     """
     location = Location.query.filter_by(id=id).first()
     spaceships_in_location = Spaceship.query.filter_by(location=id)
