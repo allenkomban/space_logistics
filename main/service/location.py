@@ -40,12 +40,10 @@ def remove_location(id):
 
     """
     location = Location.query.filter_by(id=id).first()
-    spaceships_in_location = Spaceship.query.filter_by(location=id)
-    print(spaceships_in_location)
 
     if location:
 
-        if spaceships_in_location:
+        if location.availability!=location.capacity:
             resp = make_response(jsonify({'message': 'This location cannot be deleted as their are spaceships in the location, you will have to move the spaceships to another location'}))
             resp.status_code = BAD_REQUEST
             return resp
@@ -61,3 +59,64 @@ def remove_location(id):
         resp = make_response(jsonify({'message': 'location with id do not exist in our database'}))
         resp.status_code = NOT_FOUND
         return resp
+
+def view_location(id):
+    """ Function to view location
+           params: id
+
+           1.return location info
+
+           return:resp
+       """
+    location = Location.query.filter_by(id=id).first()
+    print('location',location)
+
+    response = {'spaceships':[]}
+
+    if location:
+
+        """
+            This is the functionality to add new wishlist for the logged in user.
+        """
+        spaceships = Spaceship.query.filter_by(location=id).all()
+        print(spaceships)
+
+        for x in spaceships:
+            print ('x',x)
+            resp={}
+            resp['id']= x.id
+            resp['name'] = x.name
+            resp['model'] = x.model
+            resp['status'] = x.status.name
+            response['spaceships'].append(resp)
+
+        half = location.__dict__
+        del half['_sa_instance_state']
+
+        half2 = response.copy()
+        for key, value in half.items():
+            half2[key] = value
+
+        return half2
+    else:
+        resp = make_response(jsonify({'error': 'spaceship with id do not exist in database '}))
+        resp.status_code = NOT_FOUND
+        return resp
+
+def view_locations():
+    """ Function to view all locations
+               params: id
+
+               1.return info of all locations
+
+               return:resp
+           """
+    total_response={'locations':[]}
+    locations = Location.query.all()
+
+    for x in locations:
+        print('id',x.id)
+        resp = view_location(x.id)
+        total_response['locations'].append(resp)
+
+    return total_response

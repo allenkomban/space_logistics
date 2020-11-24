@@ -6,11 +6,15 @@ from ..util.http_status import *
 	service.spaceship provides supported functions for controll.spaceship
 	add_spaceship() -- support create api
 	update_spaceship() -- support update api
+	remove_spaceship() -- support remove api
+	view_spaceship() -- support view api
+	view_spaceships() -- support view api
+	
 """
 
 def add_spaceship(data,id):
     """ Function to add spaceship
-    param: spaceship_data,id
+    param: data,id
             - data is a dictionary containing the details of the spaceship to be added
             - id is the id of the spaceship to be added
 
@@ -33,7 +37,7 @@ def add_spaceship(data,id):
         return resp
     if location.availability==0:
         resp = make_response(jsonify({'message': 'this location is at its maximum capacity'}))
-        resp.status_code = BAD_REQUEST
+        resp.status_code = SUCCESS
         return resp
 
     try:
@@ -55,7 +59,7 @@ def add_spaceship(data,id):
 
 def update_spaceship(data,id):
     """ Function to update status of spaceship
-       		param: updated_info, iD
+       		param: data, id
        		- updated_info contains updated status for
        		- id is the id of spaceship to be updated
 
@@ -69,6 +73,12 @@ def update_spaceship(data,id):
     if spaceship:
         if 'status' in data.keys():
             try:
+                if spaceship.status == Status[data['status']]:
+                    resp = make_response(jsonify({'message': 'spaceship is already in given status'}))
+                    resp.status_code = SUCCESS
+                    return resp
+
+
                 spaceship.status = Status[data['status']]
             except KeyError:
                 resp = make_response(jsonify({'error': 'Invalid status provided '}))
@@ -102,6 +112,7 @@ def remove_spaceship(id):
            		3. remove the spaceship
            		return: resp
            	"""
+
     spaceship = Spaceship.query.filter_by(id=id).first()
     location = Location.query.filter_by(id=spaceship.location).first()
     if spaceship:
@@ -118,5 +129,49 @@ def remove_spaceship(id):
         resp.status_code = NOT_FOUND
         return resp
 
-
+def dictionary_spaceship(spaceship,location):
+    resp = {}
+    resp['id'] = spaceship.id
+    resp['name'] = spaceship.name
+    resp['model'] = spaceship.model
+    resp['status'] = spaceship.status.name
+    resp['city'] = location.city
+    resp['planet'] = location.planet
+    return resp
     
+def view_spaceship(id):
+    """ Function to view spaceship
+               		param:id
+               		- id of spaceship
+               		1.view details of spaceship, return error if id not valid
+               		return: resp
+               	"""
+    spaceship = Spaceship.query.filter_by(id=id).first()
+
+    if spaceship:
+        """
+        			This is the functionality to add new wishlist for the logged in user.
+        		"""
+        location = Location.query.filter_by(id=spaceship.location).first()
+        resp=dictionary_spaceship(spaceship,location)
+        return resp
+    else:
+        resp = make_response(jsonify({'error': 'spaceship with id do not exist in database '}))
+        resp.status_code = NOT_FOUND
+        return resp
+
+def view_all_spaceships():
+    """ Function to view all spaceships
+               		1.return details of all spaceship
+               		return: resp
+               	"""
+    total_response={'spaceships':[]}
+    spaceship = Spaceship.query.all()
+
+    for x in spaceship:
+        location = Location.query.filter_by(id=x.location).first()
+        resp = dictionary_spaceship(x, location)
+        total_response['spaceships'].append(resp)
+
+    return total_response
+
