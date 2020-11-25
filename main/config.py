@@ -6,7 +6,7 @@ import os
     'sqlite:///folder_name/database_name.db'
 """
 
-local_db = 'sqlite:///sqlite_db/stomble.db'
+local_db = 'sqlite:///sqlite_db/spaceship_location.db'
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 

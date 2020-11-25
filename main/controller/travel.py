@@ -35,7 +35,7 @@ class Travel(Resource):
 
         return response
 
-@api.route('/<spaceship_id>/<location_id>')
+@api.route('/<int:spaceship_id>/<int:location_id>')
 class Travel(Resource):
     @api.doc('travel functionality ')
     @api.response(200, 'success')
