@@ -4,8 +4,10 @@ from ..util.http_status import *
 
 """
 	service.location provides supported functions for controll.location
-	add_location() -- support create api
+	add_location() -- support post api
 	remove_location() -- support delete api
+	view_location() -- support get api 
+	view_locations() -- support get api
 """
 
 def add_location(data, id):
@@ -23,42 +25,44 @@ def add_location(data, id):
         resp.status_code = BAD_REQUEST
         return resp
     else:
-        location=Location(id=id, city=data['city'], planet=data['planet'], capacity=data['capacity'], availability=data['capacity'] )
+        location = Location(id = id, city = data['city'], planet = data['planet'],
+                            capacity = data['capacity'],
+                            availability = data['capacity'])
         db.session.add(location)
         db.session.commit()
         resp = make_response(jsonify({'message': 'location added successfully'}))
-        resp.status_code = SUCCESS
+        resp.status_code = CREATED
         return resp
-
 
 def remove_location(id):
     """ Function to remove location
         params: id
         1.check criteria and validity
         2.modify database
-
-
     """
     location = Location.query.filter_by(id=id).first()
 
     if location:
 
-        if location.availability!=location.capacity:
-            resp = make_response(jsonify({'message': 'This location cannot be deleted as their are spaceships in the location, you will have to move the spaceships to another location'}))
-            resp.status_code = BAD_REQUEST
+        if location.availability==0:
+
+            db.session.delete(location)
+            db.session.commit()
+            resp = make_response(jsonify({'message': 'location  removed successfully, '}))
+            resp.status_code = SUCCESS
             return resp
 
+        else:
 
-        db.session.delete(location)
-        db.session.commit()
-        resp = make_response(jsonify({'message': 'location  deleted successfully '}))
-        resp.status_code = SUCCESS
-        return resp
+            resp = make_response(jsonify({'message': 'location cannot be removed, please move spaceships at location'}))
+            resp.status_code = BAD_REQUEST
+            return resp
 
     else:
         resp = make_response(jsonify({'message': 'location with id do not exist in our database'}))
         resp.status_code = NOT_FOUND
         return resp
+
 
 def view_location(id):
     """ Function to view location
@@ -68,23 +72,19 @@ def view_location(id):
 
            return:resp
        """
-    location = Location.query.filter_by(id=id).first()
-    print('location',location)
+    location = Location.query.filter_by(id = id).first()
 
-    response = {'spaceships':[]}
 
     if location:
 
         """
             This is the functionality to add new wishlist for the logged in user.
         """
-        spaceships = Spaceship.query.filter_by(location=id).all()
-        print(spaceships)
-
+        response = {'spaceships': []}
+        spaceships = Spaceship.query.filter_by(location = id).all()
         for x in spaceships:
-            print ('x',x)
-            resp={}
-            resp['id']= x.id
+            resp = {}
+            resp['id'] = x.id
             resp['name'] = x.name
             resp['model'] = x.model
             resp['status'] = x.status.name
@@ -92,7 +92,6 @@ def view_location(id):
 
         half = location.__dict__
         del half['_sa_instance_state']
-
         half2 = response.copy()
         for key, value in half.items():
             half2[key] = value
@@ -111,11 +110,11 @@ def view_locations():
 
                return:resp
            """
-    total_response={'locations':[]}
+    total_response = {'locations': []}
     locations = Location.query.all()
 
     for x in locations:
-        print('id',x.id)
+
         resp = view_location(x.id)
         total_response['locations'].append(resp)
 

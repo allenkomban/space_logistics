@@ -2,7 +2,16 @@ from ..model.model import *
 from flask import jsonify, make_response
 from ..util.http_status import *
 
-def travel(spaceship_id,location_id):
+"""
+	service.spaceship provides supported functions for controll.spaceship
+	travel() -- support post api
+	travel_with_payload() -- post api
+
+
+"""
+
+
+def travel(spaceship_id, location_id):
     """ Function for spaceships to travel to new location
        		param: spaceship_id, location_id
        		- spaceship_id contains id of spaceship
@@ -19,24 +28,23 @@ def travel(spaceship_id,location_id):
 
     if spaceship:
 
-        if Status[spaceship.status.name]!=Status.OPERATIONAL:
+        if Status[spaceship.status.name] != Status.OPERATIONAL:
             resp = make_response(jsonify({'error': 'spaceship is not operational '}))
             resp.status_code = BAD_REQUEST
             return resp
 
         if final_location:
 
-            if final_location==current_location:
+            if final_location == current_location:
                 resp = make_response(jsonify({'message': 'spaceship already at destination location'}))
                 resp.status_code = SUCCESS
                 return resp
 
-
             if final_location.availability > 0:
 
-                current_location.availability = current_location.availability+1
-                final_location.availability = final_location.availability-1
-                spaceship.location=location_id
+                current_location.availability = current_location.availability + 1
+                final_location.availability = final_location.availability - 1
+                spaceship.location = location_id
                 db.session.add(spaceship, current_location)
                 db.session.add(final_location)
                 db.session.commit()
@@ -74,7 +82,7 @@ def travel_with_payload(data):
            		return: resp
            	"""
 
-    spaceship = Spaceship.query.filter_by(name=data['name'],model=data['model']).first()
+    spaceship = Spaceship.query.filter_by(name=data['name'], model=data['model']).first()
 
     destination = Location.query.filter_by(city=data['destination_city'], planet=data['destination_planet']).first()
 
@@ -84,8 +92,6 @@ def travel_with_payload(data):
             resp = make_response(jsonify({'error': 'spaceship is not operational '}))
             resp.status_code = BAD_REQUEST
             return resp
-
-
 
         if destination == current_location:
             resp = make_response(jsonify({'message': 'spaceship already at destination location'}))
@@ -111,16 +117,14 @@ def travel_with_payload(data):
             return resp
 
     elif spaceship and not destination:
-        resp = make_response(jsonify({'error': 'location not found , please check city name and planet name '}))
+        resp = make_response(jsonify({'error': 'location not found , check city name and planet name '}))
         resp.status_code = NOT_FOUND
         return resp
 
     elif not spaceship and destination:
-        resp = make_response(jsonify({'error': 'spaceship not found, please check name and model of spaceship'}))
+        resp = make_response(jsonify({'error': 'spaceship not found, check name and model of spaceship'}))
         resp.status_code = NOT_FOUND
 
     elif not spaceship and not destination:
         resp = make_response(jsonify({'error': 'location and spaceship not found '}))
         resp.status_code = NOT_FOUND
-
-

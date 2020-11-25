@@ -17,6 +17,6 @@ api = Api(blueprint,
           )
 
 
-api.add_namespace(location, path='/location')
-api.add_namespace(spaceship, path='/spaceship')
+api.add_namespace(location, path='/locations')
+api.add_namespace(spaceship, path='/spaceships')
 api.add_namespace(travel, path='/travel')

@@ -4,11 +4,11 @@ from ..util.http_status import *
 
 """
 	service.spaceship provides supported functions for controll.spaceship
-	add_spaceship() -- support create api
-	update_spaceship() -- support update api
-	remove_spaceship() -- support remove api
-	view_spaceship() -- support view api
-	view_spaceships() -- support view api
+	add_spaceship() -- support post api
+	update_spaceship() -- support put api
+	remove_spaceship() -- support delte api
+	view_spaceship() -- support get api
+	view_spaceships() -- support get api
 	
 """
 
@@ -31,29 +31,33 @@ def add_spaceship(data,id):
         return resp
 
     location = Location.query.filter_by( city = data['city'] , planet = data['planet'] ).first()
+
     if not location:
         resp = make_response(jsonify({'message': 'please enter a valid city and planet '}))
         resp.status_code = BAD_REQUEST
         return resp
+
     if location.availability==0:
         resp = make_response(jsonify({'message': 'this location is at its maximum capacity'}))
-        resp.status_code = SUCCESS
+        resp.status_code = BAD_REQUEST
         return resp
 
     try:
         if 'status' in data.keys():
             status = Status[data['status']]
+
     except KeyError:
+
         resp = make_response(jsonify({'error': 'Invalid status'}))
         resp.status_code = BAD_REQUEST
         return resp
 
-    location.availability=location.availability-1
-    spaceship = Spaceship(id=id, name=data['name'], model=data['model'], location=location.id,status=status)
-    db.session.add(spaceship,location)
+    location.availability = location.availability-1
+    spaceship = Spaceship(id = id, name = data['name'], model = data['model'], location = location.id, status = status)
+    db.session.add(spaceship, location)
     db.session.commit()
-    resp=make_response(jsonify({'message': 'spaceship added successfully '}))
-    resp.status_code= SUCCESS
+    resp = make_response(jsonify({'message': 'spaceship added successfully '}))
+    resp.status_code= CREATED
     return resp
 
 
@@ -81,7 +85,7 @@ def update_spaceship(data,id):
 
                 spaceship.status = Status[data['status']]
             except KeyError:
-                resp = make_response(jsonify({'error': 'Invalid status provided '}))
+                resp = make_response(jsonify({'error': c}))
                 resp.status_code = BAD_REQUEST
                 return resp
 
@@ -113,8 +117,8 @@ def remove_spaceship(id):
            		return: resp
            	"""
 
-    spaceship = Spaceship.query.filter_by(id=id).first()
-    location = Location.query.filter_by(id=spaceship.location).first()
+    spaceship = Spaceship.query.filter_by(id = id).first()
+    location = Location.query.filter_by(id = spaceship.location).first()
     if spaceship:
         location.availability=location.availability+1
         db.session.delete(spaceship)
@@ -130,6 +134,8 @@ def remove_spaceship(id):
         return resp
 
 def dictionary_spaceship(spaceship,location):
+    """function to combine information of spaceship and its location"""
+
     resp = {}
     resp['id'] = spaceship.id
     resp['name'] = spaceship.name
@@ -155,7 +161,9 @@ def view_spaceship(id):
         location = Location.query.filter_by(id=spaceship.location).first()
         resp=dictionary_spaceship(spaceship,location)
         return resp
+
     else:
+
         resp = make_response(jsonify({'error': 'spaceship with id do not exist in database '}))
         resp.status_code = NOT_FOUND
         return resp
@@ -169,6 +177,7 @@ def view_all_spaceships():
     spaceship = Spaceship.query.all()
 
     for x in spaceship:
+
         location = Location.query.filter_by(id=x.location).first()
         resp = dictionary_spaceship(x, location)
         total_response['spaceships'].append(resp)

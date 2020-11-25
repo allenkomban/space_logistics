@@ -12,34 +12,38 @@ view_spaceships_model = SpaceshipDto.view_spaceships
 update_spaceship_model = SpaceshipDto.update_spaceship
 
 """
-    spaceship api
-    add   -- add a new spaceship to the database
-    update  -- update a spaceship status
-    remove -- removing a spaceship 
+controller to trigger spaceship related operations
+
+    End point '/spaceships'
+    GET Method -- this method is to view details of all spaceship
+    
+    End point '/spaceships/<spaceship_id>'
+    POST  -- this triggers methods to add a new spaceship to an existing location
+    GET -- this is a method to view details of a spaceship along with its location
+    PUT -- this is a method to update the status
+    DELETE -- this trigger methods to delete a spaceship   
 """
 
 @api.route('')
 class Spaceships(Resource):
 
     @api.doc('view all spaceships ')
-    @api.response(200, 'success', model=view_spaceships_model)
+    @api.response(200, 'success', model = view_spaceships_model)
     @api.response(400, 'Bad request')
     def get(self):
         """
-                   interface to view spaceship details.
+                   interface to view all spaceships.
         """
         response = view_all_spaceships()
         return marshal(response, view_spaceships_model), SUCCESS
 
-
-
-@api.route('<int:id>')
+@api.route('/<int:id>')
+@api.doc(params = {'id': 'spaceship id'})
 class Spaceship(Resource):
 
     @api.doc('add a new spaceship ')
-    @api.param('id', description='spaceship id')
-    @api.expect(add_spaceship_model)
-    @api.response(200, 'success')
+    @api.expect(add_spaceship_model, validate = True )
+    @api.response(201, 'created')
     @api.response(400, 'Bad request')
     def post(self, id):
         """
@@ -51,9 +55,8 @@ class Spaceship(Resource):
         return response
 
     @api.doc('view a spaceship ')
-    @api.response(200, 'success', model=view_spaceship_model)
-    @api.param('id', description='spaceship id')
-    @api.response(400, 'Bad request')
+    @api.response(200, 'success', model = view_spaceship_model)
+    @api.response(404, 'Not found')
     def get(self, id):
         """
                    interface to view spaceship details.
@@ -64,17 +67,14 @@ class Spaceship(Resource):
         else:
             return response
 
-
     @api.doc('update spaceship status')
     @api.response(200, 'success')
-    @api.expect(update_spaceship_model)
-    @api.param('id', description='spaceship id')
-
+    @api.expect(update_spaceship_model, validate = True)
     @api.response(400, 'Bad request')
     @api.response(404, 'not found')
     def put(self, id):
         """
-            interface to update the spaceship status.
+            interface to update status of spaceship.
         """
 
         updated_info = json.loads(request.get_data())
@@ -83,7 +83,6 @@ class Spaceship(Resource):
 
     @api.doc('update spaceship status')
     @api.response(200, 'success')
-    @api.param('id', description='spaceship id')
     @api.response(404, 'not found')
     def delete(self,id):
         """

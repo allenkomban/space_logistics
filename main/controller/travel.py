@@ -1,23 +1,23 @@
 from flask import request
-from flask_restplus import Resource, marshal
+from flask_restplus import Resource
 from ..util.dto import *
 from ..service.travel import *
 import json
-from ..util.http_status import *
 
 api = TravelDto.api
 travel_model=TravelDto.travel
+
 """
-implemented two types of travel endpoints which does the same functionality
-    End point '/travel/<s_id>/<l_ic>'
-    update  -- update tables according to travel details
+implemented 2 endpoints to travel, both does the same functionality
+
+    End point '/travel/<spaceship_id>/<location_id>'
+    POST Method -- this method executes travel functionality 
     
     End point '/travel'
-    update  -- update tables according to travel status
+    POST Method -- this method executes travel functionality with payload
     
+    NOTE: both the methods do the same thing.
 """
-
-
 
 @api.route('')
 class Travel(Resource):
@@ -35,18 +35,16 @@ class Travel(Resource):
 
         return response
 
-
-
-@api.route('/<s_id>/<l_id>')
+@api.route('/<spaceship_id>/<location_id>')
 class Travel(Resource):
     @api.doc('travel functionality ')
     @api.response(200, 'success')
     @api.response(400, 'Bad request')
     @api.response(404, 'not found')
-    def post(self, s_id,l_id):
+    def post(self, spaceship_id,location_id):
         """
             interface for spaceship travel.
         """
-        response = travel(s_id, l_id)
+        response = travel(spaceship_id, location_id)
 
         return response
