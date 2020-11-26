@@ -32,7 +32,7 @@ class Spaceships(Resource):
     @api.response(400, 'Bad request')
     def get(self):
         """
-                   interface to view details of all spaceships and its current location.
+                   interface to view details of all spaceships and their current location.
         """
         response = view_all_spaceships()
         return marshal(response, view_spaceships_model), SUCCESS
