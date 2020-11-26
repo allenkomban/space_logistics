@@ -1,10 +1,6 @@
 import os
 
-"""
-    DB Connection URl
-    To connect to db replace below local_db with your own db url
-    'sqlite:///folder_name/database_name.db'
-"""
+"this is the relative path to our database"
 
 local_db = 'sqlite:///sqlite_db/spaceship_location.db'
 
