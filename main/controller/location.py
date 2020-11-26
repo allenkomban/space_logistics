@@ -17,8 +17,8 @@ controller to trigger location related operations
     GET Method -- this method executes a methods to view details of all locations along with spaceships stationed at those locations.
 
     End point '/locations/<location_id>'
-    POST  -- this triggers method to add a new spaceship to an existing location.
-    GET -- this is a method to view information of location along with information of spaceships stationed at that location
+    POST  -- this triggers method to add a new location .
+    GET -- this is a method to view information of location along with information of spaceships stationed at that location.
     DELETE -- this trigger methods to remove a location
 """
 
