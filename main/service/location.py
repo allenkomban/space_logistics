@@ -14,20 +14,28 @@ def add_location(data, id):
     """ Function to add location
     params: data, id
         1.check for vality of data
-        2.create new location with data
-        3.add it to data base
+        2 check if location with same city and planet is already added .
+        3.create new location with data
+        4.add it to data base
         return:resp
     """
-    location = Location.query.filter_by(id=id).first()
+    location = Location.query.filter_by(id = id).first()
 
     if location:
         resp = make_response(jsonify({'message': 'location with id already exist in database'}))
         resp.status_code = BAD_REQUEST
         return resp
     else:
-        location = Location(id = id, city = data['city'], planet = data['planet'],
-                            capacity = data['capacity'],
-                            availability = data['capacity'])
+
+        duplicate_location = Location.query.filter_by(city = data['city'],planet = data['planet']).first()
+
+        if duplicate_location:
+            resp = make_response(jsonify({'message': 'location with city and planet already found in the database'}))
+            resp.status_code = BAD_REQUEST
+            return resp
+
+        location = Location(**data)
+        location.availability=location.capacity
         db.session.add(location)
         db.session.commit()
         resp = make_response(jsonify({'message': 'location added successfully'}))
