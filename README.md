@@ -17,9 +17,9 @@ This is a REST API system to manage the logistics of a fleet of spaceships
 * Refer API_documentaion.pdf to view a technical documentation of the API.
 * Refer ERD.pdf to view the database model and relations.
 * Simple sqlite database is used to store data.
-* To view to contents of the database , you will have to download DB Browser for SQLite
-* Database is initialized with tables. It will be empty initially
+* To view to contents of the database , you will have to download DB Browser for SQLite.
+* Database is initialized with tables. It will be empty initially.
 
 ##### Tools used
 
-python and flask 
+Python and Flask 
