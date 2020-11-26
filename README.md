@@ -18,6 +18,7 @@ This is a REST API system to manage the logistics of a fleet of spaceships
 * Refer ERD.pdf to view the database model and relations.
 * Simple sqlite database is used to store data.
 * To view to contents of the database , you will have to download DB Browser for SQLite
+* Database is initialized with tables. It will be empty initially
 
 ##### Tools used
 
