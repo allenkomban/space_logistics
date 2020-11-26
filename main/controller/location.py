@@ -29,7 +29,7 @@ class Locations(Resource):
     @api.response(400, 'Bad request')
     def get(self):
         """
-            interface to view details of all locations.
+            interface to view details of all locations and spaceships at those locations.
         """
         response = view_locations()
         return marshal(response, view_locations_model), SUCCESS
@@ -44,7 +44,7 @@ class Location(Resource):
     @api.response(400, 'Bad request')
     def get(self, id):
         """
-            interface to view location details.
+            interface to view details of a location and the spaceships stationed at the location.
         """
         response = view_location(id)
         if type(response) == dict:
@@ -58,7 +58,7 @@ class Location(Resource):
     @api.response(400, 'bad request')
     def post(self, id):
         """
-			interface to add new location
+			interface to add new location.
 		"""
 
         data = json.loads(request.get_data())
@@ -71,7 +71,7 @@ class Location(Resource):
     @api.response(404, 'not found')
     def delete(self, id):
         """
-			interface to delete a location
+			interface to remove a location.
 		"""
         response = remove_location(id)
         return response

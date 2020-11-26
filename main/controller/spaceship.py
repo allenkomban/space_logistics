@@ -32,7 +32,7 @@ class Spaceships(Resource):
     @api.response(400, 'Bad request')
     def get(self):
         """
-                   interface to view all spaceships.
+                   interface to view details of all spaceships and its current location.
         """
         response = view_all_spaceships()
         return marshal(response, view_spaceships_model), SUCCESS
@@ -47,7 +47,7 @@ class Spaceship(Resource):
     @api.response(400, 'Bad request')
     def post(self, id):
         """
-            interface to add spaceship .
+            interface to add new spaceship .
         """
         spaceship_data = json.loads(request.get_data())
         response = add_spaceship(spaceship_data, id)
@@ -59,7 +59,7 @@ class Spaceship(Resource):
     @api.response(404, 'Not found')
     def get(self, id):
         """
-                   interface to view spaceship details.
+                   interface to view details of a spaceship and its current location.
         """
         response = view_spaceship(id)
         if type(response) == dict:
