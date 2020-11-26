@@ -25,6 +25,7 @@ def add_location(data, id):
         resp = make_response(jsonify({'message': 'location with id already exist in database'}))
         resp.status_code = BAD_REQUEST
         return resp
+
     else:
 
         duplicate_location = Location.query.filter_by(city = data['city'],planet = data['planet']).first()
@@ -48,7 +49,7 @@ def remove_location(id):
         1.check criteria and validity
         2.modify database
     """
-    location = Location.query.filter_by(id=id).first()
+    location = Location.query.filter_by(id = id).first()
 
     if location:
 
@@ -82,14 +83,11 @@ def view_location(id):
        """
     location = Location.query.filter_by(id = id).first()
 
-
     if location:
 
-        """
-            This is the functionality to add new wishlist for the logged in user.
-        """
         response = {'spaceships': []}
         spaceships = Spaceship.query.filter_by(location = id).all()
+
         for x in spaceships:
             resp = {}
             resp['id'] = x.id
@@ -101,11 +99,14 @@ def view_location(id):
         half = location.__dict__
         del half['_sa_instance_state']
         half2 = response.copy()
+
         for key, value in half.items():
             half2[key] = value
 
         return half2
+
     else:
+
         resp = make_response(jsonify({'error': 'spaceship with id do not exist in database '}))
         resp.status_code = NOT_FOUND
         return resp

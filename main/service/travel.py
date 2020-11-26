@@ -22,9 +22,9 @@ def travel(spaceship_id, location_id):
        		3. update location of spaceship
        		return: resp
        	"""
-    spaceship = Spaceship.query.filter_by(id=spaceship_id).first()
-    current_location = Location.query.filter_by(id=spaceship.location).first()
-    final_location = Location.query.filter_by(id=location_id).first()
+    spaceship = Spaceship.query.filter_by(id = spaceship_id).first()
+    current_location = Location.query.filter_by(id = spaceship.location).first()
+    final_location = Location.query.filter_by(id = location_id).first()
 
     if spaceship:
 
@@ -82,12 +82,14 @@ def travel_with_payload(data):
            		return: resp
            	"""
 
-    spaceship = Spaceship.query.filter_by(name=data['name'], model=data['model']).first()
+    spaceship = Spaceship.query.filter_by(name = data['name'], model = data['model']).first()
 
-    destination = Location.query.filter_by(city=data['destination_city'], planet=data['destination_planet']).first()
+    destination = Location.query.filter_by(city = data['destination_city'], planet = data['destination_planet']).first()
 
     if spaceship and destination:
-        current_location = Location.query.filter_by(id=spaceship.location).first()
+
+        current_location = Location.query.filter_by(id = spaceship.location).first()
+
         if Status[spaceship.status.name] != Status.OPERATIONAL:
             resp = make_response(jsonify({'error': 'spaceship is not operational '}))
             resp.status_code = BAD_REQUEST
@@ -117,14 +119,17 @@ def travel_with_payload(data):
             return resp
 
     elif spaceship and not destination:
+
         resp = make_response(jsonify({'error': 'location not found , check city name and planet name '}))
         resp.status_code = NOT_FOUND
         return resp
 
     elif not spaceship and destination:
+
         resp = make_response(jsonify({'error': 'spaceship not found, check name and model of spaceship'}))
         resp.status_code = NOT_FOUND
 
     elif not spaceship and not destination:
+
         resp = make_response(jsonify({'error': 'location and spaceship not found '}))
         resp.status_code = NOT_FOUND
