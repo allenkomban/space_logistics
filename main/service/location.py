@@ -30,7 +30,7 @@ def add_location(data, id):
         duplicate_location = Location.query.filter_by(city = data['city'],planet = data['planet']).first()
 
         if duplicate_location:
-            resp = make_response(jsonify({'message': 'location with city and planet name already found in the database'}))
+            resp = make_response(jsonify({'message': 'location with given city and planet name already found in the database'}))
             resp.status_code = BAD_REQUEST
             return resp
 
