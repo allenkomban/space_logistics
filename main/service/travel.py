@@ -23,10 +23,13 @@ def travel(spaceship_id, location_id):
        		return: resp
        	"""
     spaceship = Spaceship.query.filter_by(id = spaceship_id).first()
-    current_location = Location.query.filter_by(id = spaceship.location).first()
+
     final_location = Location.query.filter_by(id = location_id).first()
 
+
     if spaceship:
+
+        current_location = Location.query.filter_by(id = spaceship.location).first()
 
         if Status[spaceship.status.name] != Status.OPERATIONAL:
             resp = make_response(jsonify({'error': 'spaceship is not operational '}))
