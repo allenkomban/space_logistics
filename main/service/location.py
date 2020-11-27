@@ -53,7 +53,7 @@ def remove_location(id):
 
     if location:
 
-        if location.availability==0:
+        if location.availability == location.capacity:
 
             db.session.delete(location)
             db.session.commit()
